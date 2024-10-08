@@ -1,5 +1,4 @@
-#include <Arduino.h>
-#include "rueda.h"
+#include "Rueda.h"
 
 #define pin_M1A 4
 #define pin_M1B 16

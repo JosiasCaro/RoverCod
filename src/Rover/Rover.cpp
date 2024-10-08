@@ -1,5 +1,4 @@
-#include <Arduino.h>
-#include "rover.h"
+#include "Rover.h"
 
 Rover::Rover(int pinIzquierdaA, int pinIzquierdaB, int pinDerechaA, int pinDerechaB)
     : _ruedaIzquierda(pinIzquierdaA, pinIzquierdaB), _ruedaDerecha(pinDerechaA, pinDerechaB) {

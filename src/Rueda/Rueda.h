@@ -1,5 +1,5 @@
-#ifndef rueda_h
-#define rueda_h
+#ifndef Rueda_h
+#define Rueda_h
 
 #include <Arduino.h>
 
