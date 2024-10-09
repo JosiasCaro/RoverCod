@@ -13,7 +13,7 @@ void Rueda::inicializar() {
 
 void Rueda::girar(int velocidadA, int velocidadB) {
     analogWrite(_pin_asignadoA, velocidadA);
-    analogWrite(_pin_asignadoB, velocidadB);
+    analogWrite(_pin_asignadoB, velocidadA);
 };
 
 void Rueda::detenerse() {
