@@ -6,6 +6,7 @@
 Rueda::Rueda(int pin_ruedaA, int pin_ruedaB) {
     _pin_asignadoA = pin_ruedaA;
     _pin_asignadoB = pin_ruedaB;
+    inicializar();
 };
 
 void Rueda::inicializar() {
@@ -15,7 +16,7 @@ void Rueda::inicializar() {
 
 void Rueda::girar(int velocidadA, int velocidadB) {
     analogWrite(pin_M1A, velocidadA);
-    analogWrite(pin_M1B, velocidadA);
+    analogWrite(pin_M1B, velocidadB);
 };
 
 void Rueda::detenerse() {
