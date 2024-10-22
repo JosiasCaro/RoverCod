@@ -1,28 +1,25 @@
-#include "Joystick.h"
+#ifndef Joystick_h
+#define Joystick_h
 
-Joystick::Joystick(Rover* rover) : _rover(rover) {}
+#include <Arduino.h>
+#include "../Rover/Rover.h"
 
-// == GAME CONTROLLER ACTIONS SECTION ==
-void Joystick::processGamepad(ControllerPtr ctl) {
-    // Manejamos el LED
-    digitalWrite(pinLed, (ctl->buttons() == 0x0001) ? HIGH : LOW);
+class Joystick {
+public:
+    Joystick(int pinX, int pinY, int pinLed, Rover* rover);
+    void inicializar();
+    void procesar();
+    void detener();
+    void onConnectedController();
+    void onDisconnectedController();
+    void dumpGamepad();
+    void ProcessControllers();
+private:
+    int _pinX;
+    int _pinY;
+    int _pinLed;
+    Rover* _rover;
+    bool _connected; 
+};
 
-    int motorSpeed = map(ctl->axisY(), -512, 512, -255, 255);
-    int giro = map(ctl->axisX(), -512, 512, -255, 255);
-
-    if (abs(motorSpeed) < 50 && abs(giro) < 50) {
-        _rover->detenerse();
-    } else {
-        if (motorSpeed > 0) {
-            _rover->avanzar(motorSpeed);
-        } else {
-            _rover->retroceder(-motorSpeed);
-        }
-
-        if (giro < 0) {
-            _rover->girarDerecha(-giro);
-        } else if (giro > 0) {
-            _rover->girarIzquierda(giro);
-        }
-    }
-}
+#endif

@@ -1,42 +1,62 @@
 #include "Joystick.h"
 
-Joystick::Joystick(Rover* rover) : _rover(rover) {}
+Joystick::Joystick(int pinX, int pinY, int pinLed, Rover* rover) {
+    _pinX = pinX;
+    _pinY = pinY;
+    _pinLed = pinLed;
+    _rover = rover;
+    _connected = false; 
+}
 
-// == GAME CONTROLLER ACTIONS SECTION ==
-void Joystick::processGamepad(ControllerPtr ctl) {
-    // Manejamos el LED
-    if (ctl->buttons() == 0x0001) {
-        digitalWrite(pinLed, HIGH);
+void Joystick::inicializar() {
+    pinMode(_pinX, INPUT);
+    pinMode(_pinY, INPUT);
+    pinMode(_pinLed, OUTPUT);
+    onConnectedController(); 
+}
+
+void Joystick::procesar() {
+    int ejeX = analogRead(_pinX);
+    int ejeY = analogRead(_pinY);
+  
+    if (ejeY < 400) {
+        _rover->avanzar(map(ejeY, 400, 0, 0, 255));
+    } else if (ejeY > 600) {
+        _rover->retroceder(map(ejeY, 600, 1023, 0, 255));
     } else {
-        digitalWrite(pinLed, LOW);
+        detener();
     }
 
-    //== LEFT JOYSTICK - UP ==//
-    if (ctl->axisY() <= -25) {
-        int motorSpeed = map(ctl->axisY(), -25, -508, 70, 255);
-        _rover->avanzar(motorSpeed);
+    if (ejeX < 400) {
+        _rover->girarIzquierda(map(ejeX, 400, 0, 0, 255));
+    } else if (ejeX > 600) {
+        _rover->girarDerecha(map(ejeX, 600, 1023, 0, 255));
     }
+}
 
-    //== LEFT JOYSTICK - DOWN ==//
-    if (ctl->axisY() >= 25) {
-        int motorSpeed = map(ctl->axisY(), 25, 512, 70, 255);
-        _rover->retroceder(motorSpeed);
-    }
+void Joystick::detener() {
+    _rover->detenerse();
+}
 
-    //== LEFT JOYSTICK - LEFT ==//
-    if (ctl->axisX() <= -25) {
-        int motorSpeed = map(ctl->axisX(), -25, -508, 70, 255);
-        _rover->girarIzquierda(motorSpeed);
-    }
+void Joystick::onConnectedController() {
+    _connected = true;
+    digitalWrite(_pinLed, HIGH); 
+    Serial.println("Controlador conectado");
+}
 
-    //== LEFT JOYSTICK - RIGHT ==//
-    if (ctl->axisX() >= 25) {
-        int motorSpeed = map(ctl->axisX(), 25, 512, 70, 255);
-        _rover->girarDerecha(motorSpeed);
-    }
+void Joystick::onDisconnectedController() {
+    _connected = false;
+    digitalWrite(_pinLed, LOW); 
+    Serial.println("Controlador desconectado");
+}
 
-    //== LEFT JOYSTICK DEADZONE ==//
-    if (ctl->axisY() > -25 && ctl->axisY() < 25 && ctl->axisX() > -25 && ctl->axisX() < 25) {
-        _rover->detenerse();
+void Joystick::dumpGamepad() {
+    Serial.print("Conectado: ");
+    Serial.println(_connected ? "Sí" : "No");
+}
+
+void Joystick::ProcessControllers() {
+    if (_connected) {
+        procesar();
     }
 }
