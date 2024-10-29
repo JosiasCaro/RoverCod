@@ -5,6 +5,7 @@
 
 int esperaSensor = 100;
 int led = 4;
+int choque = 0;
 
 Sensor sensor1(15);
 
@@ -23,7 +24,12 @@ void loop_tarea1(void * pvParameters) {
   Serial.print("Tarea1 se corre en el nucleo: ");
   Serial.println(xPortGetCoreID());
   while(1){
-    sensor1.medirDistancia(led);
+    int distancia = sensor1.medirDistancia(led);
+    if(distancia > 0 && distancia < 20){
+      choque = distancia;
+    }else{
+      choque = 0;
+    }
     delay(600);
   }
 }
@@ -33,14 +39,14 @@ void setup() {
   InicializarSerial();
   pinMode(led, OUTPUT);
 
-  // xTaskCreatePinnedToCore(
-  //    loop_tarea1, /* Funcion de la tarea1 */
-  //    "Tarea1", /* Nombre de la tarea */
-  //    10000,  /* Tamaño de la pila */
-  //    NULL,  /* Parametros de entrada */
-  //    0,  /* Prioridad de la tarea */
-  //    &Tarea1,  /* objeto TaskHandle_t. */
-  //    0); /* Nucleo donde se correra */
+  xTaskCreatePinnedToCore(
+      loop_tarea1, /* Funcion de la tarea1 */
+      "Tarea1", /* Nombre de la tarea */
+      10000,  /* Tamaño de la pila */
+      NULL,  /* Parametros de entrada */
+      0,  /* Prioridad de la tarea */
+      &Tarea1,  /* objeto TaskHandle_t. */
+      0); /* Nucleo donde se correra */
 }
 
 // Arduino loop function. Runs in CPU 1.
@@ -51,7 +57,7 @@ void loop() {
   // Detailed info here:
   // https://stackoverflow.com/questions/66278271/task-watchdog-got-triggered-the-tasks-did-not-reset-the-watchdog-in-time
   
-  rover.actualizar(1);
-  //vTaskDelay(1);
+  rover.actualizar(choque);
+  vTaskDelay(1);
   delay(100);
 }

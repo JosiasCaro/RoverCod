@@ -5,9 +5,7 @@ Sensor::Sensor(int pingPin) {
 };
 
 
-void Sensor::medirDistancia(int pin) {
-  
-    Serial.begin(115200);
+long Sensor::medirDistancia(int pin) {
     long duration, cm;
 
     pinMode(_pingPin, OUTPUT);
@@ -30,6 +28,7 @@ void Sensor::medirDistancia(int pin) {
     Serial.print(cm);
     Serial.print("cm");
     Serial.println();
+    return cm;
 };
 
 long Sensor::microsegundosACentimetros(long microseconds) {

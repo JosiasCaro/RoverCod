@@ -47,5 +47,9 @@ void Rover::actualizar(int sensor){
         if(motorSpeed[0] == 0 || motorSpeed[1] == 0 || motorSpeed[2] == 0 || motorSpeed[3] == 0){
             detenerse();
         }
+    }else{
+        girarIzquierda(100);
+        delay(500);
+        detenerse();
     }
 }

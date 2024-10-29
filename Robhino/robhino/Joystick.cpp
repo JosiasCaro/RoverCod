@@ -10,8 +10,6 @@ Joystick::Joystick(int ledPin) {
 };
 
 void Joystick::inicializar() {
-    
-    Serial.begin(115200);
     Serial.printf("Firmware: %s\n", BP32.firmwareVersion());
     const uint8_t* addr = BP32.localBdAddress();
     Serial.printf("BD Addr: %2X:%2X:%2X:%2X:%2X:%2X\n", addr[0], addr[1], addr[2], addr[3], addr[4], addr[5]);
@@ -131,37 +129,24 @@ void Joystick::processGamepad(ControllerPtr ctl) {
     // == FORWARD (R2) ==
     if (ctl->buttons() & 0x2000) { // R2
         _motorSpeeds[0] = map(r2Intensity, 100, 1023, 150, 255); // map R2 intensity
-        //rover.avanzar(motorSpeed);
     }
 
     // == REVERSE (L2) ==
     if (ctl->buttons() & 0x1000) { // L2
         _motorSpeeds[1] = map(l2Intensity, 100, 1023, 150, 255); // map L2 intensity
-        //rover.retroceder(motorSpeed);
     }
 
     //== LEFT JOYSTICK - LEFT ==//
     if (ctl->axisX() <= -25) {
         // map joystick values to motor speed
         _motorSpeeds[2] = map(ctl->axisX(), -25, -508, 150, 255);
-        // turn robot left - move right motor forward, keep left motor still
-        //rover.girarIzquierda(motorSpeed);
-
     }
 
     //== LEFT JOYSTICK - RIGHT ==//
     if (ctl->axisX() >= 25) {
         // map joystick values to motor speed
         _motorSpeeds[3] = map(ctl->axisX(), 25, 512, 150, 255);
-        // turn robot right - move left motor forward, keep right motor still
-        //rover.girarDerecha(motorSpeed);
     }
-
-    //== LEFT JOYSTICK DEADZONE ==//
-    //if (!(ctl->axisX() < -25 || ctl->axisX() > 25 || ctl->buttons() & 0x1000 || ctl->buttons() & 0x2000)) {
-        // keep motors off
-        //rover.detenerse();
-    //}
 
     dumpGamepad(ctl);
 }
