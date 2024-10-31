@@ -3,16 +3,16 @@
 
 #include <Arduino.h>
 #include <Bluepad32.h>
-#include <array>
+#include "Rover.h"
 
 class Joystick
 {
     public:
-        Joystick(int ledPin);
-        std::array<int, 4> actualizacion(); // Cambia el tipo de retorno
+        Joystick(int ledPin, Rover& rover);
+        void setup();
+        void loop();
 
     private:
-        void inicializar();
         static void onConnectedController(ControllerPtr ctl);
         static void onDisconnectedController(ControllerPtr ctl);
         void processControllers();
@@ -20,7 +20,7 @@ class Joystick
         void dumpGamepad(ControllerPtr ctl);
 
         int _ledPin;
-        std::array<int, 4> _motorSpeeds; // Cambia el tipo a std::array
+        Rover& _rover; // Cambia el tipo a std::array
 };
 
 #endif

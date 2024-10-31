@@ -8,7 +8,7 @@ class Sensor {
     
     public: 
         Sensor(int pingPin);
-        long medirDistancia(int pin);
+        void medirDistancia(int pin);
 
     private:
         int _pingPin;
