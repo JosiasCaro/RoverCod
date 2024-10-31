@@ -2,17 +2,19 @@
 #define Sensor_h
 
 #include <Arduino.h>
-#include "Sensor.h"
+#include <NewPing.h>
 
 class Sensor {
     
     public: 
-        Sensor(int pingPin);
-        void medirDistancia(int pin);
+        Sensor(int triggerPin, int echoPin);
+        int medirDistancia();
 
     private:
-        int _pingPin;
-        long microsegundosACentimetros(long microseconds);
+        int _triggerPin;
+        int _echoPin;
+        NewPing sonar; // Cambiado para declarar una instancia sin inicializar
+        int _distancia;
 };
 
 #endif

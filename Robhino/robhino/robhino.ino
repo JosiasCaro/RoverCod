@@ -6,12 +6,13 @@
 int esperaSensor = 100;
 int pinLed = 2;
 int led = 4;
+int distancia = 0;
 
 Rover rover(12, 13, 14, 27);
 
 Joystick joystick(pinLed, rover);
 
-Sensor sensor1(26);
+Sensor sensor1(25, 26);
 
 void InicializarSerial(){
   Serial.begin(115200);
@@ -23,7 +24,7 @@ void loop_tarea1(void * pvParameters) {
   Serial.print("Tarea1 se corre en el nucleo: ");
   Serial.println(xPortGetCoreID());
   while(1){
-    sensor1.medirDistancia(led);
+    distancia = sensor1.medirDistancia();
     delay(600);
   }
 }
@@ -49,7 +50,6 @@ void setup() {
 // Arduino loop function. Runs in CPU 1.
 void loop() {
   joystick.loop();
-
   // The main loop must have some kind of "yield to lower priority task" event.
   // Otherwise, the watchdog will get triggered.
   // If your main loop doesn't have one, just add a simple vTaskDelay(1).

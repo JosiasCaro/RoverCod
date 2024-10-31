@@ -1,35 +1,18 @@
 #include "Sensor.h"
 
-Sensor::Sensor(int pingPin) {
-    _pingPin = pingPin;
-};
+#define MAX_DISTANCE 200 // Maximum distance we want to ping for (in centimeters).
 
+// Constructor
+Sensor::Sensor(int triggerPin, int echoPin) 
+    : _triggerPin(triggerPin), _echoPin(echoPin), sonar(triggerPin, echoPin, MAX_DISTANCE) {
+    // Se inicializa la instancia 'sonar' con los pines y la distancia máxima
+}
 
-void Sensor::medirDistancia(int pin) {
-    long duration, cm;
-
-    pinMode(_pingPin, OUTPUT);
-    digitalWrite(_pingPin, LOW);
-    delayMicroseconds(2);
-    digitalWrite(_pingPin, HIGH);
-    delayMicroseconds(5);
-    digitalWrite(_pingPin, LOW);
-
-    pinMode(_pingPin, INPUT);
-    duration = pulseIn(_pingPin, HIGH);
-
-    cm = microsegundosACentimetros(duration);
-    if(cm < 10) {
-        digitalWrite(pin, HIGH);
-    } else {
-        digitalWrite(pin, LOW);
-    }
-
-    Serial.print(cm);
-    Serial.print("cm");
-    Serial.println();
-};
-
-long Sensor::microsegundosACentimetros(long microseconds) {
-    return microseconds / 29 / 2;
+int Sensor::medirDistancia() {
+    delay(50);                     // Wait 50ms between pings.
+    _distancia = sonar.ping_cm();
+    Serial.print("Distacia: ");
+    Serial.print(_distancia); // Send ping, get distance in cm and print result
+    Serial.println("cm");
+    return _distancia;
 }
