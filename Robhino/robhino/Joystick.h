@@ -20,7 +20,8 @@ class Joystick
         void dumpGamepad(ControllerPtr ctl);
 
         int _ledPin;
-        Rover& _rover; // Cambia el tipo a std::array
+        Rover& _rover;
+        int _direccion;
 };
 
 #endif
