@@ -10,7 +10,7 @@ class Joystick
     public:
         Joystick(int ledPin, Rover& rover);
         void setup();
-        void loop();
+        void loop(int obstaculo);
 
     private:
         static void onConnectedController(ControllerPtr ctl);
@@ -22,6 +22,7 @@ class Joystick
         int _ledPin;
         Rover& _rover;
         int _direccion;
+        int _obstaculo;
 };
 
 #endif

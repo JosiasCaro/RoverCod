@@ -2,6 +2,7 @@
 #include "Rover.h"
 #include "Sensor.h"
 #include "Joystick.h"
+#include "DetectorDeObstaculos.h"
 
 int esperaSensor = 100;
 int pinLed = 2;
@@ -13,6 +14,8 @@ Rover rover(12, 13, 14, 27);
 Joystick joystick(pinLed, rover);
 
 Sensor sensor1(25, 26);
+
+DetectorDeObstaculos detector;
 
 void InicializarSerial(){
   Serial.begin(115200);
@@ -49,7 +52,7 @@ void setup() {
 
 // Arduino loop function. Runs in CPU 1.
 void loop() {
-  joystick.loop();
+  joystick.loop(detector.detectarObstaculo(distancia));
   // The main loop must have some kind of "yield to lower priority task" event.
   // Otherwise, the watchdog will get triggered.
   // If your main loop doesn't have one, just add a simple vTaskDelay(1).

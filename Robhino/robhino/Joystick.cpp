@@ -6,6 +6,7 @@ Joystick::Joystick(int ledPin, Rover& rover) : _rover(rover){
     _rover = rover;
     _ledPin = ledPin;
     _direccion = 0;
+    _obstaculo = 0;
 }
 
 void Joystick::setup(){
@@ -36,7 +37,8 @@ void Joystick::setup(){
   digitalWrite(_ledPin, LOW);
 }
 
-void Joystick::loop(){
+void Joystick::loop(int obstaculo){
+  _obstaculo = obstaculo;
   // This call fetches all the controllers' data.
   // Call this function in your main loop.
   bool dataUpdated = BP32.update();
@@ -121,62 +123,67 @@ void Joystick::processGamepad(ControllerPtr ctl) {
     digitalWrite(_ledPin, LOW);
   }
 
-  //== R2 - UP ==//
-  if (ctl->buttons() == 0x0080) {
-    // map joystick values to motor speed
-    int motorSpeed = map(r2Intensity, 100, 1023, 150, 255);
-    // move motors/robot forward
-    _rover.avanzar(motorSpeed);
-    if (_direccion != 1){
-      _direccion = 1;
-      Serial.println("Rover adelante | Velocidad: " + String(motorSpeed));
-    }
-  }
+  if (_obstaculo == 0){
 
-  //== L2 - DOWN ==//
-  if (ctl->buttons() == 0x0040) {
-    // map joystick values to motor speed
-    int motorSpeed = map(l2Intensity, 100, 1023, 150, 255);
-    // move motors/robot in reverse
-    _rover.retroceder(motorSpeed);
-    if (_direccion != 2){
-      _direccion = 2;
-      Serial.println("Rover atras | Velocidad: " + String(motorSpeed));
-    }
-  }
+      //== R2 - UP ==//
+      if (ctl->buttons() == 0x0080) {
+        // map joystick values to motor speed
+        int motorSpeed = map(r2Intensity, 100, 1023, 150, 255);
+        // move motors/robot forward
+        _rover.avanzar(motorSpeed);
+        if (_direccion != 1){
+          _direccion = 1;
+          Serial.println("Rover adelante | Velocidad: " + String(motorSpeed));
+        }
+      }
 
-  //== LEFT JOYSTICK - LEFT ==//
-  if (ctl->axisX() <= -25) {
-    // map joystick values to motor speed
-    int motorSpeed = map(ctl->axisX(), -25, -508, 70, 255);
-    // turn robot left - move right motor forward, keep left motor still
-    _rover.girarIzquierda(motorSpeed);
-    if (_direccion != 3){
-      _direccion = 3;
-      Serial.println("Rover izquierda | Velocidad: " + String(motorSpeed));
-    }
-  }
+      //== L2 - DOWN ==//
+      if (ctl->buttons() == 0x0040) {
+        // map joystick values to motor speed
+        int motorSpeed = map(l2Intensity, 100, 1023, 150, 255);
+        // move motors/robot in reverse
+        _rover.retroceder(motorSpeed);
+        if (_direccion != 2){
+          _direccion = 2;
+          Serial.println("Rover atras | Velocidad: " + String(motorSpeed));
+        }
+      }
 
-  //== LEFT JOYSTICK - RIGHT ==//
-  if (ctl->axisX() >= 25) {
-    // map joystick values to motor speed
-    int motorSpeed = map(ctl->axisX(), 25, 512, 70, 255);
-    // turn robot right - move left motor forward, keep right motor still
-    _rover.girarDerecha(motorSpeed);
-    if (_direccion != 4){
-      _direccion = 4;
-      Serial.println("Rover derecha | Velocidad: " + String(motorSpeed));
-    }
-  }
+      //== LEFT JOYSTICK - LEFT ==//
+      if (ctl->axisX() <= -25) {
+        // map joystick values to motor speed
+        int motorSpeed = map(ctl->axisX(), -25, -508, 70, 255);
+        // turn robot left - move right motor forward, keep left motor still
+        _rover.girarIzquierda(motorSpeed);
+        if (_direccion != 3){
+          _direccion = 3;
+          Serial.println("Rover izquierda | Velocidad: " + String(motorSpeed));
+        }
+      }
 
-  //== LEFT JOYSTICK DEADZONE ==//
-  if (ctl->axisX() > -25 && ctl->axisX() < 25 && ctl->buttons() !=  0x0080 && ctl->buttons() != 0x0040) {
-    // keep motors off
-    _rover.detenerse();
-    if (_direccion != 0){
-      _direccion = 0;
-      Serial.println("Rover detenido | Velocidad: 0");
-    }
+      //== LEFT JOYSTICK - RIGHT ==//
+      if (ctl->axisX() >= 25) {
+        // map joystick values to motor speed
+        int motorSpeed = map(ctl->axisX(), 25, 512, 70, 255);
+        // turn robot right - move left motor forward, keep right motor still
+        _rover.girarDerecha(motorSpeed);
+        if (_direccion != 4){
+          _direccion = 4;
+          Serial.println("Rover derecha | Velocidad: " + String(motorSpeed));
+        }
+      }
+
+      //== LEFT JOYSTICK DEADZONE ==//
+      if (ctl->axisX() > -25 && ctl->axisX() < 25 && ctl->buttons() !=  0x0080 && ctl->buttons() != 0x0040) {
+        // keep motors off
+        _rover.detenerse();
+        if (_direccion != 0){
+          _direccion = 0;
+          Serial.println("Rover detenido | Velocidad: 0");
+        }
+      }
+  } else{
+      Serial.println("Obstaculo detectado.");
   }
 
   //dumpGamepad(ctl);
