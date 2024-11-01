@@ -202,6 +202,8 @@ void Joystick::processGamepad(ControllerPtr ctl) {
   } else{
       Serial.println("Obstaculo detectado.");
       _direccion = 0;
+      _rover.girarDerecha(HIGH);
+      delay(500);
       _rover.detenerse();
   }
 
