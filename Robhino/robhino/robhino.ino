@@ -9,10 +9,11 @@ int pinLed = 2;
 int led = 4;
 int distancia = 0;
 
-Rover rover(12, 13, 14, 27);
+Rover rover(12, 13, 14, 27, 33);
 
 Joystick joystick(pinLed, rover);
 
+          //trigg, echo
 Sensor sensor1(25, 26);
 
 DetectorDeObstaculos detector;

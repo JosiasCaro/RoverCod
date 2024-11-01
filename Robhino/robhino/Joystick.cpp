@@ -116,19 +116,33 @@ void Joystick::processGamepad(ControllerPtr ctl) {
   int l2Intensity = ctl->brake();    // L2
   int r2Intensity = ctl->throttle(); // R2
 
+  // == X - Led == //
   if (ctl->buttons() == 0x0001) {
     digitalWrite(_ledPin, HIGH);
+    _ultimoBoton = 0x0001;
   }
   if (ctl->buttons() != 0x0001) {
     digitalWrite(_ledPin, LOW);
   }
+  
+  //== ■ - Cortar Pasto ==//
+  if (ctl->buttons() == 0x0004 && _ultimoBoton != 0x0004) {
+    _pasto = _rover.cortar(); 
+    _ultimoBoton = 0x0004;
+  }
+  
+  //== !■ - Desbloquear pasto ==//
+  if (ctl->buttons() != 0x0004) {
+    _ultimoBoton = 0x0000;
+  }
 
-  if (_obstaculo == 0){
+  if (_obstaculo == 0 || _pasto){
 
       //== R2 - UP ==//
       if (ctl->buttons() == 0x0080) {
         // map joystick values to motor speed
         int motorSpeed = map(r2Intensity, 100, 1023, 150, 255);
+        _ultimoBoton = 0x0080;
         // move motors/robot forward
         _rover.avanzar(motorSpeed);
         if (_direccion != 1){
@@ -141,6 +155,7 @@ void Joystick::processGamepad(ControllerPtr ctl) {
       if (ctl->buttons() == 0x0040) {
         // map joystick values to motor speed
         int motorSpeed = map(l2Intensity, 100, 1023, 150, 255);
+        _ultimoBoton = 0x0040;
         // move motors/robot in reverse
         _rover.retroceder(motorSpeed);
         if (_direccion != 2){
@@ -153,6 +168,7 @@ void Joystick::processGamepad(ControllerPtr ctl) {
       if (ctl->axisX() <= -25) {
         // map joystick values to motor speed
         int motorSpeed = map(ctl->axisX(), -25, -508, 70, 255);
+        _ultimoBoton = 0x1000;
         // turn robot left - move right motor forward, keep left motor still
         _rover.girarIzquierda(motorSpeed);
         if (_direccion != 3){
@@ -165,6 +181,7 @@ void Joystick::processGamepad(ControllerPtr ctl) {
       if (ctl->axisX() >= 25) {
         // map joystick values to motor speed
         int motorSpeed = map(ctl->axisX(), 25, 512, 70, 255);
+        _ultimoBoton = 0x2000;
         // turn robot right - move left motor forward, keep right motor still
         _rover.girarDerecha(motorSpeed);
         if (_direccion != 4){
@@ -184,6 +201,8 @@ void Joystick::processGamepad(ControllerPtr ctl) {
       }
   } else{
       Serial.println("Obstaculo detectado.");
+      _direccion = 0;
+      _rover.detenerse();
   }
 
   //dumpGamepad(ctl);

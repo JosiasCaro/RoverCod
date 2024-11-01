@@ -1,7 +1,7 @@
 #include "Rover.h"
 
-Rover::Rover(int pinIzquierdaA, int pinIzquierdaB, int pinDerechaA, int pinDerechaB)
-    : _ruedaIzquierda(pinIzquierdaA, pinIzquierdaB), _ruedaDerecha(pinDerechaA, pinDerechaB) {
+Rover::Rover(int pinIzquierdaA, int pinIzquierdaB, int pinDerechaA, int pinDerechaB, int pinPasto)
+    : _ruedaIzquierda(pinIzquierdaA, pinIzquierdaB), _ruedaDerecha(pinDerechaA, pinDerechaB), _cortadora(pinPasto) {
 }
 
 void Rover::avanzar(int velocidad) {
@@ -27,4 +27,8 @@ void Rover::girarIzquierda(int velocidad) {
 void Rover::girarDerecha(int velocidad) {
     _ruedaIzquierda.girar(0, velocidad);
     _ruedaDerecha.girar(velocidad, 0);
+}
+
+bool Rover::cortar(){
+    return _cortadora.cortar();
 }

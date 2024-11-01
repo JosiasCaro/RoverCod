@@ -23,6 +23,8 @@ class Joystick
         Rover& _rover;
         int _direccion;
         int _obstaculo;
+        bool _pasto;
+        int _ultimoBoton;
 };
 
 #endif
