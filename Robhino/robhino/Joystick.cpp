@@ -129,6 +129,7 @@ void Joystick::processGamepad(ControllerPtr ctl) {
   if (ctl->buttons() == 0x0004 && _ultimoBoton != 0x0004) {
     _pasto = _rover.cortar(); 
     _ultimoBoton = 0x0004;
+    Serial.println("Cuadrado");
   }
   
   //== !■ - Desbloquear pasto ==//
